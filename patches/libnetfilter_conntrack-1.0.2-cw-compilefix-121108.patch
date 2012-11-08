@@ -1,0 +1,57 @@
+diff -ru libnetfilter_conntrack-1.0.2/src/conntrack/build_mnl.c libnetfilter_conntrack-1.0.2-cw-compilefix-121108/src/conntrack/build_mnl.c
+--- libnetfilter_conntrack-1.0.2/src/conntrack/build_mnl.c	2012-06-26 16:26:30.000000000 +0100
++++ libnetfilter_conntrack-1.0.2-cw-compilefix-121108/src/conntrack/build_mnl.c	2012-11-08 13:04:54.000000000 +0000
+@@ -192,7 +192,7 @@
+ 		}
+ 		if (test_bit(ATTR_DCCP_HANDSHAKE_SEQ, ct->head.set)) {
+ 			uint64_t handshake_seq =
+-				be64toh(ct->protoinfo.dccp.handshake_seq);
++				__be64_to_cpu(ct->protoinfo.dccp.handshake_seq);
+ 
+ 			mnl_attr_put_u64(nlh, CTA_PROTOINFO_DCCP_HANDSHAKE_SEQ,
+ 					 handshake_seq);
+diff -ru libnetfilter_conntrack-1.0.2/src/conntrack/parse_mnl.c libnetfilter_conntrack-1.0.2-cw-compilefix-121108/src/conntrack/parse_mnl.c
+--- libnetfilter_conntrack-1.0.2/src/conntrack/parse_mnl.c	2012-06-26 16:26:30.000000000 +0100
++++ libnetfilter_conntrack-1.0.2-cw-compilefix-121108/src/conntrack/parse_mnl.c	2012-11-08 13:04:21.000000000 +0000
+@@ -449,7 +449,7 @@
+ 		set_bit(ATTR_DCCP_ROLE, ct->head.set);
+ 	}
+ 	if (tb[CTA_PROTOINFO_DCCP_HANDSHAKE_SEQ]) {
+-		ct->protoinfo.dccp.handshake_seq = be64toh(
++		ct->protoinfo.dccp.handshake_seq = __be64_to_cpu(
+ 		mnl_attr_get_u64(tb[CTA_PROTOINFO_DCCP_HANDSHAKE_SEQ]));
+ 		set_bit(ATTR_DCCP_HANDSHAKE_SEQ, ct->head.set);
+ 	}
+@@ -538,7 +538,7 @@
+ 		}
+ 		if (tb[CTA_COUNTERS_PACKETS]) {
+ 			ct->counters[dir].packets =
+-			be64toh(mnl_attr_get_u64(tb[CTA_COUNTERS_PACKETS]));
++			__be64_to_cpu(mnl_attr_get_u64(tb[CTA_COUNTERS_PACKETS]));
+ 		}
+ 		switch(dir) {
+ 		case __DIR_ORIG:
+@@ -556,7 +556,7 @@
+ 		}
+ 		if (tb[CTA_COUNTERS_BYTES]) {
+ 			ct->counters[dir].bytes =
+-			be64toh(mnl_attr_get_u64(tb[CTA_COUNTERS_BYTES]));
++			__be64_to_cpu(mnl_attr_get_u64(tb[CTA_COUNTERS_BYTES]));
+ 		}
+ 
+ 		switch(dir) {
+@@ -760,12 +760,12 @@
+ 
+ 	if (tb[CTA_TIMESTAMP_START]) {
+ 		ct->timestamp.start =
+-			be64toh(mnl_attr_get_u64(tb[CTA_TIMESTAMP_START]));
++			__be64_to_cpu(mnl_attr_get_u64(tb[CTA_TIMESTAMP_START]));
+ 		set_bit(ATTR_TIMESTAMP_START, ct->head.set);
+ 	}
+ 	if (tb[CTA_TIMESTAMP_STOP]) {
+ 		ct->timestamp.stop =
+-			be64toh(mnl_attr_get_u64(tb[CTA_TIMESTAMP_START]));
++			__be64_to_cpu(mnl_attr_get_u64(tb[CTA_TIMESTAMP_START]));
+ 		set_bit(ATTR_TIMESTAMP_STOP, ct->head.set);
+ 	}
+ 

@@ -1,0 +1,60 @@
+diff -ru conntrack-tools-1.4.0/src/cthelper.c conntrack-tools-1.4.0-cw-compilefix-121108/src/cthelper.c
+--- conntrack-tools-1.4.0/src/cthelper.c	2012-09-13 12:11:15.000000000 +0100
++++ conntrack-tools-1.4.0-cw-compilefix-121108/src/cthelper.c	2012-11-08 12:52:55.000000000 +0000
+@@ -121,9 +121,11 @@
+ 		}
+ 		break;
+ 	}
++#ifdef ETHERTYPE_IPV6
+ 	case ETHERTYPE_IPV6:
+ 		dlog(LOG_ERR, "no IPv6 support sorry");
+ 		return 0;
++#endif
+ 	default:
+ 		/* Unknown layer 3 protocol. */
+ 		dlog(LOG_ERR, "unknown layer 3 protocol (%d), skipping", proto);
+diff -ru conntrack-tools-1.4.0/include/linux/netfilter/nfnetlink.h conntrack-tools-1.4.0-cw-compilefix-121108/include/linux/netfilter/nfnetlink.h
+--- conntrack-tools-1.4.0/include/linux/netfilter/nfnetlink.h	2012-05-26 14:29:19.000000000 +0100
++++ conntrack-tools-1.4.0-cw-compilefix-121108/include/linux/netfilter/nfnetlink.h	2012-11-08 12:55:30.000000000 +0000
+@@ -1,7 +1,7 @@
+ #ifndef _NFNETLINK_H
+ #define _NFNETLINK_H
+ #include <linux/types.h>
+-#include <linux/netfilter/nfnetlink_compat.h>
++// #include <linux/netfilter/nfnetlink_compat.h>
+ 
+ enum nfnetlink_groups {
+ 	NFNLGRP_NONE,
+--- conntrack-tools-1.4.0/src/nfct-extensions/timeout.c	2012-05-26 19:59:23.000000000 +0100
++++ conntrack-tools-1.4.0-cw-compilefix-121108/src/nfct-extensions/timeout.c	2012-11-08 13:13:00.000000000 +0000
+@@ -159,9 +159,13 @@
+ 	[IPPROTO_ICMP]		= NFCT_TIMEOUT_ATTR_ICMP_MAX,
+ 	[IPPROTO_TCP]		= NFCT_TIMEOUT_ATTR_TCP_MAX,
+ 	[IPPROTO_UDP]		= NFCT_TIMEOUT_ATTR_UDP_MAX,
++#ifdef IPPROTO_UDPLITE
+ 	[IPPROTO_UDPLITE]	= NFCT_TIMEOUT_ATTR_UDPLITE_MAX,
++#endif
+ 	[IPPROTO_SCTP]		= NFCT_TIMEOUT_ATTR_SCTP_MAX,
++#ifdef IPPROTO_DCCP
+ 	[IPPROTO_DCCP]		= NFCT_TIMEOUT_ATTR_DCCP_MAX,
++#endif
+ 	[IPPROTO_ICMPV6]	= NFCT_TIMEOUT_ATTR_ICMPV6_MAX,
+ 	[IPPROTO_GRE]		= NFCT_TIMEOUT_ATTR_GRE_MAX,
+ 	[IPPROTO_RAW]		= NFCT_TIMEOUT_ATTR_GENERIC_MAX,
+@@ -213,12 +213,16 @@
+ 		l4proto = IPPROTO_TCP;
+ 	else if (strcmp(argv[5], "udp") == 0)
+ 		l4proto = IPPROTO_UDP;
++#ifdef IPPROTO_UDPLITE
+ 	else if (strcmp(argv[5], "udplite") == 0)
+ 		l4proto = IPPROTO_UDPLITE;
++#endif
+ 	else if (strcmp(argv[5], "sctp") == 0)
+ 		l4proto = IPPROTO_SCTP;
++#ifdef IPPROTO_DCCP
+ 	else if (strcmp(argv[5], "dccp") == 0)
+ 		l4proto = IPPROTO_DCCP;
++#endif
+ 	else if (strcmp(argv[5], "icmp") == 0)
+ 		l4proto = IPPROTO_ICMP;
+ 	else if (strcmp(argv[5], "icmpv6") == 0)

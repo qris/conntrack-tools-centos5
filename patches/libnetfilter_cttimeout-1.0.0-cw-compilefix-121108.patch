@@ -1,0 +1,36 @@
+diff -ru libnetfilter_cttimeout-1.0.0/include/linux/netfilter/nfnetlink.h libnetfilter_cttimeout-1.0.0-cw-compilefix-121108/include/linux/netfilter/nfnetlink.h
+--- libnetfilter_cttimeout-1.0.0/include/linux/netfilter/nfnetlink.h	2012-02-29 02:19:01.000000000 +0000
++++ libnetfilter_cttimeout-1.0.0-cw-compilefix-121108/include/linux/netfilter/nfnetlink.h	2012-11-08 12:34:20.000000000 +0000
+@@ -1,7 +1,7 @@
+ #ifndef _NFNETLINK_H
+ #define _NFNETLINK_H
+ #include <linux/types.h>
+-#include <linux/netfilter/nfnetlink_compat.h>
++// #include <linux/netfilter/nfnetlink_compat.h>
+ 
+ enum nfnetlink_groups {
+ 	NFNLGRP_NONE,
+diff -ru libnetfilter_cttimeout-1.0.0/src/libnetfilter_cttimeout.c libnetfilter_cttimeout-1.0.0-cw-compilefix-121108/src/libnetfilter_cttimeout.c
+--- libnetfilter_cttimeout-1.0.0/src/libnetfilter_cttimeout.c	2012-05-26 14:11:30.000000000 +0100
++++ libnetfilter_cttimeout-1.0.0-cw-compilefix-121108/src/libnetfilter_cttimeout.c	2012-11-08 12:45:00.000000000 +0000
+@@ -104,16 +104,20 @@
+ 		.attr_max	= NFCT_TIMEOUT_ATTR_SCTP_MAX,
+ 		.state_to_name	= sctp_state_to_name,
+ 	},
++#ifdef IPPROTO_DCCP
+ 	[IPPROTO_DCCP]	= {
+ 		.nlattr_max	= __CTA_TIMEOUT_DCCP_MAX,
+ 		.attr_max	= NFCT_TIMEOUT_ATTR_DCCP_MAX,
+ 		.state_to_name	= dccp_state_to_name,
+ 	},
++#endif // IPPROTO_DCCP
++#ifdef IPPROTO_UDPLITE
+ 	[IPPROTO_UDPLITE]	= {
+ 		.nlattr_max	= __CTA_TIMEOUT_UDPLITE_MAX,
+ 		.attr_max	= NFCT_TIMEOUT_ATTR_UDPLITE_MAX,
+ 		.state_to_name	= udp_state_to_name,
+ 	},
++#endif // IPPROTO_UDPLITE
+ 	[IPPROTO_ICMPV6]	= {
+ 		.nlattr_max	= __CTA_TIMEOUT_ICMPV6_MAX,
+ 		.attr_max	= NFCT_TIMEOUT_ATTR_ICMPV6_MAX,
